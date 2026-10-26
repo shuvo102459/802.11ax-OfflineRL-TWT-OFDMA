@@ -1,0 +1,76 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{State and reward}
+
+The state is a $130$-dimensional vector: two aggregate terms, then eight
+features per station. Per station these are throughput, a normalised demand
+deficit, three scaled backlog indicators, energy efficiency, drops and energy
+drawn. All are deltas over the preceding decision window. The state carries no
+clock, so a policy cannot infer the schedule from time alone.
+
+The reward combines a per-station term $r_{\mathrm{sum}}$, Jain fairness
+$r_{\mathrm{fair}}$, and a network term $r_{\mathrm{net}}$ containing an energy
+penalty. We use
+\begin{equation}
+r = 0.30\,z\!\left(-\tanh\frac{E}{E^{*}}\right) + 0.55\,z(r_{\mathrm{sum}})
+    + 0.15\,z(r_{\mathrm{fair}}),
+\label{eq:reward}
+\end{equation}
+where $E$ is the per-decision energy summed over stations, $E^{*} = 8000$\,mJ,
+and $z(\cdot)$ is standardised on the training split alone. The energy scale
+matters: the formulation we inherited used $E_0 = 400$\,mJ, which saturates the
+$\tanh$ across the whole operating range and leaves the reward insensitive to
+energy. Section~\ref{sec:results} quantifies what that correction is worth.
+
+\subsection{Dataset and training}
+
+We log $2{,}404$ episodes, $100{,}235$ transitions (Alg.~\ref{alg:pipeline}).
+The ten-decision hold is deliberate: with a fresh draw every decision, measured
+energy is flat against schedule tightness, and only a sustained schedule makes
+the gradient visible. Splits are by episode, never by transition---$2{,}043$
+training, $361$ held out---and we train behaviour cloning, DQN+CQL, Double DQN,
+dueling DQN+CQL and IQL~\cite{kumar2020cql,vanhasselt2016ddqn,kostrikov2022iql}
+at ten initialisations each.
+
+\subsection{Checkpoint selection}
+
+Selecting a checkpoint without touching the network is itself a problem.
+Importance-sampling estimates are degenerate here: for a deterministic policy
+against a behaviour policy uniform over $A$ actions, the effective sample size
+reduces to the state-action matches---a few hundred out of $15{,}025$ held-out
+transitions. We therefore rank by fitted Q evaluation~\cite{le2019fqe}, fitting
+a critic on the training split and evaluating at held-out episode starts, and
+validate that ranking against the simulator rather than assume it sound.
+
+\begin{algorithm}[t]
+\caption{Offline joint TWT/OFDMA control}
+\label{alg:pipeline}
+\small
+\begin{algorithmic}[1]
+\STATE \textbf{Collect} $\mathcal{D}$: for each episode, draw $a \sim \mathrm{Unif}(760)$,
+       hold it for $H=10$ decisions, log $(s,a,r,s')$
+\STATE \textbf{Split} $\mathcal{D}$ by episode into $\mathcal{D}_{\mathrm{tr}}, \mathcal{D}_{\mathrm{ho}}$
+\FOR{each algorithm $m$ and seed $\sigma \in \{42..51\}$}
+  \STATE $\theta_{m,\sigma} \leftarrow$ train $m$ on $\mathcal{D}_{\mathrm{tr}}$, snapshot every $50$ epochs
+  \STATE $k^\star \leftarrow \arg\max_k \mathrm{FQE}(\theta^{(k)}_{m,\sigma}; \mathcal{D}_{\mathrm{tr}}, \mathcal{D}_{\mathrm{ho}})$
+         \COMMENT{no simulator}
+\ENDFOR
+\STATE \textbf{Deploy} $\theta^{(k^\star)}$: each decision, take
+      $a_t = \arg\max_a Q(s_t,a)$, decode $(b_t, s^{\mathrm{sched}}_t, g_t)$,
+      and if $b_t$ solicit only stations whose service period has
+      $\ge 5.8$\,ms left
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Service-period-aligned triggering}
+
+A trigger exchange started near the end of a service period cannot finish inside
+it. The station sleeps before it replies, and the access point is left awaiting
+a reply from a radio that has switched off. That is a protocol fault, not a
+missed transmission opportunity.
+
+We therefore solicit a station only while its service period still has room for
+the entire exchange, which we take as $5.8$\,ms, covering the trigger, two short
+interframe spaces, a maximum-duration trigger-based PPDU and the acknowledgement.
+This aligns uplink OFDMA with the awake window by construction.

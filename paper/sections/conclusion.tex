@@ -1,0 +1,44 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+A controller for TWT and uplink OFDMA has to adapt, and neither obvious way of
+obtaining one is satisfactory: a hand-coded rule needs an expert and is tuned
+for conditions that change, while an online learner has to explore on a network
+carrying real users. We tested the middle path. Five offline algorithms were
+trained on $100{,}235$ logged transitions in ns-3.44, ten initialisations each,
+selecting a TWT schedule, a group assignment and the uplink OFDMA bit per
+decision window---$760$ actions---and compared against nine non-learned
+scenarios on fifty paired seeds under one simulator and one window.
+
+Two findings follow. First, IQL reduces station energy by $35.6\,\%$ against a
+hand-designed controller tuned under a service floor, at higher throughput and
+consistently across ten fits. Second, the two mechanisms substitute rather than
+combine here: enabling uplink OFDMA raises energy at every TWT setting tested,
+the five methods order by how often each enables it, and an independent
+coordinate search disables it when given the choice.
+
+The result is about IQL, not offline RL. Four of five methods lose to the
+hand-designed rule, and the two CQL variants tie only if their best of ten fits
+can be identified---which takes the network measurements the method was adopted
+to avoid. Low across-fit variance is what makes IQL usable, so checkpoint
+selection, not policy optimisation, is the remaining difficulty.
+
+Three limits bound the claims. The topology is one basic service set, sixteen
+stations and $20$\,MHz; we tested solicitation limits of four and nine and the
+substitution strengthened at both, but we cannot speak beyond them. The station
+mix and the traffic model are identical across every arm, so the comparisons are
+internally controlled but not shown to transfer. The energy model also mixes two power profiles: the scenario leaves CCA-busy at
+ns-3's default of $273$\,mA, measured on an 802.11n laptop
+card~\cite{halperin2010demystifying}, against its own $66$\,mA receive current,
+so sensing the medium costs more than transmitting on it. Repricing CCA moves
+arm energies by $18$ to $30\,\%$ and unevenly: no ordering changes, but every
+magnitude is conditional on that profile. Since the policies were trained under
+the shipped profile, that repricing measures the same behaviour under a
+different energy model, not the behaviour a policy would have learned under it.
+Finally the logged actions were held for ten decisions, so the data describes
+sustained operation; deploying at that same cadence changes energy by
+$-1.0\,\%$ ($p = 0.12$), so the mismatch does not appear to bite.
+
+Whether the substitution reverses at the higher station counts, wider channels
+and larger solicitation sets where uplink OFDMA is expected to pay is the
+natural next step.

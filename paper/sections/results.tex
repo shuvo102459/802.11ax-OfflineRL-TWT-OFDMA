@@ -1,0 +1,139 @@
+\section{Results}
+\label{sec:results}
+
+\input{tables/tab_main}
+
+\subsection{The two mechanisms do not combine}
+
+Table~\ref{tab:main} holds three pairs of rows differing only in the OFDMA bit,
+and in every pair enabling uplink OFDMA costs energy: $+62.8\,\%$ under the
+static schedule, $+33.6\,\%$ under random TWT, $+8.3\,\%$ with TWT off.
+
+Throughput falls in all three pairs, so this is not a throughput-for-energy
+trade: the OFDMA arms are worse on both axes.
+
+The ordering is the informative part: the penalty is largest where TWT sleeps
+hardest and smallest where it does not sleep at all, because soliciting a
+station competes with the schedule trying to keep it asleep.
+
+\subsection{The cost is carrier sensing, not lost sleep}
+
+Our first explanation was that triggers wake sleeping stations. The traces
+refute it. Mean sleep occupancy---the fraction of the control window a station
+spends in PHY sleep, averaged over the sixteen---differs by under $0.8$
+percentage points between the OFDMA arms. Stations sleep just as much; their
+awake time simply costs more.
+
+The PHY-state traces show where it goes. Of the $113.7$\,J of extra energy,
+$69\,\%$ is spent carrier-sense busy and $24\,\%$ receiving; only $9\,\%$ is
+transmission. A solicited station listens through the trigger, the allocation
+and the acknowledgement, and listening is charged at the CCA-busy current.
+
+This also tells us what the magnitude depends on. The scenario inherits ns-3's
+default CCA-busy current of $273$\,mA while setting its own receive current to
+$66$\,mA. Repricing CCA at the receive current cuts the extra energy from
+$113.7$ to $49.8$\,J, still a cost rather than a saving. Re-running a matched
+pair under the repriced model, the learned policy's advantage over the same
+hand-designed controller narrows from $31.4$ to $19.9\,\%$, both at
+$p = 1.8\times10^{-15}$. Signs survive the change; magnitudes do not.
+
+\subsection{One algorithm beats the tuned rule}
+
+Given a free choice of OFDMA mode the tuned controller disables it, worth
+$99$\,J ($265.5$ against $166.5$\,J) at slightly better throughput. We take the
+stronger form, $166.5$\,J at $19.22$\,Mb/s, as the baseline.
+
+
+IQL reaches $107.3 \pm 2.6$\,J over ten fits: a $35.6\,\%$ reduction, CI
+$[-36.5,-34.7]\,\%$, $p = 1.8\times10^{-15}$ on fifty paired seeds. Nothing is
+traded for it---throughput rises to $20.76$ from $19.22$\,Mb/s, mean delay
+falls to $2805$ from $2888$\,ms, and budget violations fall to $0.38$ from
+$0.41$. Its worst fit of ten, $112.4$\,J, still beats every other method's
+best.
+
+\subsection{Four of five do not, and selection is why}
+
+Table~\ref{tab:main} is the reason we claim this for IQL and not for offline
+RL as a family. Read the \emph{typical fit} column, which compares the mean over
+the ten fits and so describes what training once yields. DQN$+$CQL is
+$15.9\,\%$ worse than the hand-designed rule ($p = 8.6\times10^{-5}$) and
+dueling DQN$+$CQL is $16.6\,\%$ worse ($p = 4.3\times10^{-6}$). DDQN and
+behaviour cloning are worse still.
+
+Now read the \emph{best fit} column. There the two CQL variants sit within
+$1.6\,\%$ of the baseline, and neither difference is statistically detectable:
+$p = 0.74$ and $p = 0.55$, with the paired difference's confidence interval
+spanning zero. The gap between the two columns is the whole problem. A
+practitioner who trains once gets a policy $16\,\%$ worse than a hand-written
+rule. A practitioner who can identify the best of ten gets a tie. Identifying
+it requires measuring all ten on the network, which is the cost offline RL
+exists to avoid.
+
+IQL is the exception because it barely varies: its across-fit standard deviation
+is $2.6$\,J against $10.1$ to $14.7$\,J for the others, so which fit you deploy
+does not matter.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_ordering.pdf}
+  \caption{Station energy against how often each learned policy enables uplink
+  OFDMA. Bars are the standard deviation over ten training seeds. The
+  association is almost deterministic ($r = 0.981$): the method that learned to
+  stop soliciting is the one that beats the tuned hand-designed controller
+  (dashed).}
+  \label{fig:ordering}
+\end{figure}
+
+\subsection{What separates the methods is the OFDMA bit}
+
+The five methods order by energy exactly as they order by how often they enable
+the scheduler: IQL $0\,\%$, DQN$+$CQL $23\,\%$, dueling DQN$+$CQL $25\,\%$,
+DDQN $43\,\%$ and behaviour cloning $48\,\%$---the last because the logging
+policy chose the OFDMA bit by coin flip, and imitating it reproduces that.
+
+The method that learned to stop soliciting is the one that wins. The coordinate
+search concluded the same by a different route---a staged grid over thresholds
+rather than value iteration over $760$ actions---so two optimisers of different
+character agree that at this operating point the mechanisms substitute. The obvious objection is that we crippled the scheduler. ns-3 solicits four
+stations per trigger by default, while schedule~11 leaves eight awake and the
+channel admits nine resource units, so half the awake set was unreachable.
+Raising the limit to nine makes uplink OFDMA worse, not better: $+87.4\,\%$
+against the no-OFDMA arm instead of $+62.8\,\%$ under the static schedule, and
+$+83.3\,\%$ instead of $+59.5\,\%$ for the hand-designed controller. Both are
+$+15\,\%$ on the default at $p = 2\times10^{-15}$, and throughput falls at each
+step. Solicitation cost scales with the stations a trigger names; the benefit
+scales with the data they have to send, and in this traffic mix they have
+little.
+
+\subsection{The result survives the load change}
+
+Each seed either holds its offered load constant or steps it by $1.5$ to
+$2.5\times$ partway through. Splitting the fifty on that flag tests whether the
+policy needs a settled traffic pattern; it does not---$35.1\,\%$ below the
+baseline on the $19$ constant-load seeds ($p = 3.8\times10^{-6}$) and
+$35.8\,\%$ on the $31$ stepped ones ($p = 9.3\times10^{-10}$), with higher
+throughput in both.
+
+\subsection{What the measurement rests on}
+
+Four instrumentation faults each produced the opposite headline, and all four
+were invisible in aggregate statistics. A convergence gate admitted only
+snapshots whose FQE drift fell below $2\,\%$; none passed, so selection fell
+back to the final epoch, which both FQE and the simulator rank last of four.
+Evaluating every snapshot in ns-3 gives a Spearman correlation of $-1.000$
+between FQE value and energy, so the ranking was sound and the gate discarded
+it, at $6.5\,\%$ energy; we now rank on FQE alone. The inherited reward charged
+$\tanh(E/E_0)$ at $E_0=400$\,mJ against an $E$ spanning $1390$ to
+$14{,}167$\,mJ, saturated for $99.99\,\%$ of transitions; retraining all ten
+fits on it costs $13.3$\,J ($120.7 \pm 5.6$ against $107.3 \pm 2.6$,
+$p = 3.6\times10^{-15}$ paired and $1.2\times10^{-4}$ across fits), though it
+still beats the hand-designed controller by $27.5\,\%$, so the repair improves
+the result rather than producing it. Two harnesses measured different windows,
+one including a warm-up burning $26.6\,\%$ of episode energy in $9.8\,\%$ of the
+episode; matched to the $42$-decision window they agree to $4.5\,\%$. Finally
+the scenario deferred each PHY sleep by $8$\,ms whenever the OFDMA bit was set,
+worth $+62.0\,\%$ on its own---two thirds of the $+92.5\,\%$ we had charged to
+the protocol. Sleep occupancy moved by under $0.8\,\%$ between those arms, which
+is why we first read it as harmless: it changed when stations slept, not how
+much. Service-period alignment removes the race, and every OFDMA arm here runs
+without the deferral.

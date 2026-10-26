@@ -1,0 +1,19 @@
+# Raw per-episode output and datasets: 2.3 GB, regenerate with scripts/
+data/
+results/final/
+results/*.log
+run/
+state/
+
+# LaTeX build artefacts (the built PDF is tracked deliberately)
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/main.pdf
+
+__pycache__/
+*.pyc

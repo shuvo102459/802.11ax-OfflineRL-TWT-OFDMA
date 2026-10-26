@@ -1,0 +1,69 @@
+\section{Introduction}
+
+Wi-Fi now carries a large share of indoor traffic, and much of it originates
+from battery-powered devices. IEEE 802.11ax addresses their energy cost with
+two mechanisms. Target Wake Time (TWT) lets an access point schedule when each
+station wakes, so radios sleep between service
+periods~\cite{chen2019twt,qiu2021category}. Uplink OFDMA replaces contention
+with scheduled resource units, so several stations transmit at
+once~\cite{kotagiri2021distributed,han2024multiagent}. Both reduce energy, and
+recent work treats their configuration as a scheduling problem in its own
+right~\cite{busacca2026twt,liu2025priority}.
+
+The two mechanisms are normally configured in isolation. TWT studies fix the
+OFDMA setting, and OFDMA studies fix or ignore the sleep
+schedule~\cite{karaca2020joint,noh2024joint,agbeve2025a2p}. This leaves the
+joint setting unexamined, which matters because the mechanisms compete. A
+trigger frame is only useful to a station that is awake to receive it, so every
+OFDMA round draws on the airtime and the radio states that TWT is trying to
+conserve.
+
+A single operating point also cannot serve a real deployment. Modern basic
+service sets carry mixed traffic---latency-sensitive video, periodic telemetry
+and voice in one cell~\cite{yang2021twt,tan2024drl}---and the best schedule
+under light telemetry is wasteful under a video burst. A controller must adapt,
+which raises how it should be obtained.
+
+Two obvious answers sit at opposite extremes. A hand-coded rule is cheap to run
+but needs an expert to tune, and it is unlikely to be optimal away from the
+conditions it was tuned for. An idealised online learner could in principle
+track the optimum instant by instant, but it must explore on the live network,
+and exploration costs latency and risks service
+degradation~\cite{wydmanski2021contention,yang2024offline}. Neither extreme is
+satisfactory for a deployed access point.
+
+Offline reinforcement learning occupies the space between
+them~\cite{levine2020offline,prudencio2024survey}. A policy is trained from an
+already-collected dataset and never acts on the network while learning, so it
+needs neither exploration nor an expert to label the right action. The price is
+distribution shift, for which conservative value estimation is the standard
+remedy~\cite{kumar2020cql,kostrikov2022iql}. Its wireless applications
+concentrate on cellular resource
+management~\cite{yang2024offline,eldeeb2026marl}, leaving Wi-Fi power save
+largely unexamined.
+
+We apply it to joint TWT and OFDMA control. Once per decision window the access
+point selects a TWT schedule, a station-to-group assignment, and whether uplink
+OFDMA is enabled---a 760-way discrete action. Making the OFDMA bit part of the
+action, rather than a property of the run, is what makes the problem joint: the
+policy can enable the scheduler when it pays and disable it when it does not.
+Five offline algorithms are trained on $100{,}235$ transitions logged in ns-3.44
+and compared against hand-designed and non-adaptive baselines.
+
+Our contributions are the following.
+\begin{itemize}
+\item A learned policy that cuts station energy by $35.6\,\%$ against a tuned
+hand-designed controller at higher throughput, obtained with no online
+interaction and no expert to set its thresholds. It holds across ten independent
+training runs, and separately on the seeds whose offered load steps mid-episode
+and on those whose load is constant.
+\item Evidence that uplink OFDMA and TWT act as substitutes rather than
+complements at this operating point: enabling OFDMA raises energy at every TWT
+configuration tested, and five independently trained policies order by energy
+exactly as they order by how often each enables it.
+\item A service-period-aligned trigger scheduler that solicits a station only
+while its TWT service period can still contain the whole exchange. It removes a
+race in which a solicited station sleeps before replying, leaving the access
+point waiting on a radio that has switched off, and it halves the measured cost
+of uplink OFDMA.
+\end{itemize}

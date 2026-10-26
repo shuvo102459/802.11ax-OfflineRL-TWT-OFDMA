@@ -1,0 +1,19 @@
+{
+  "n_fits_orig": 10,
+  "n_fits_corr": 10,
+  "n_paired_seeds": 49,
+  "orig_mean_J": 120.66424028455681,
+  "orig_sd_J": 5.629532314667225,
+  "corr_mean_J": 107.25887283888244,
+  "corr_sd_J": 2.5961329988041015,
+  "delta_J": 13.316383527849155,
+  "delta_pct": -11.052415357365833,
+  "delta_ci95": [
+    -11.840794883257987,
+    -10.27362773742776
+  ],
+  "wilcoxon_p": 3.552713678800501e-15,
+  "fitlevel_mannwhitney_p": 0.00012306406395261486,
+  "orig_vs_handdesigned_pct": -27.524851046169875,
+  "note": "IQL only. Same 10 training seeds, same FQE-best rule, same 50 paired eval seeds. Isolates the reward scale from initialisation luck."
+}

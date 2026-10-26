@@ -1,0 +1,52 @@
+\begin{table}[t]
+\centering
+\caption{Simulation and training configuration. Every value is the one used to
+produce the reported results; where a sweep chose it, the sweep is named.}
+\label{tab:config}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lll}
+\toprule
+\multicolumn{3}{l}{\emph{Scenario} (ns-3.44)} \\
+\midrule
+stations & $16$ & four device classes, four each \\
+channel & $20$\,MHz & 802.11ax, single BSS \\
+STAs per trigger & $4$ & ns-3 default; $20$\,MHz fits $9$ \\
+CCA-busy current & $273$\,mA & ns-3 default; TX/RX $232/66$ \\
+beacon interval & $102.4$\,ms & \\
+decision interval $\Delta$ & $20$\,BI $=2.048$\,s & $42$ decisions per episode \\
+episode length & $86$\,s & \\
+offered load & $0.058/2.037/$ & IoT / camera / voice / \\
+ & $0.030/3.400$\,Mb/s & streamer; $22.1$\,Mb/s total \\
+load step & $\times\{1.5,2.0,2.5\}$ & in $60\,\%$ of episodes, at \\
+ & & $U[30,70]$\,s; seed-determined \\
+\midrule
+\multicolumn{3}{l}{\emph{Dataset}} \\
+\midrule
+transitions & $100{,}235$ & $2{,}404$ episodes \\
+split & $85{,}210$ / $15{,}025$ & by episode, $2{,}043$ / $361$ \\
+behaviour policy & uniform over $760$ & all $760$ actions present \\
+\midrule
+\multicolumn{3}{l}{\emph{Training} (all five algorithms)} \\
+\midrule
+network & $130$--$128$--$128$--$760$ & ReLU; dueling splits the head \\
+optimiser & Adam, lr $10^{-3}$ & defaults otherwise \\
+batch size & $512$ & $149$ steps per epoch \\
+epochs & $200$ & milestone every $50$ \\
+discount $\gamma$ & $0.95$ & \\
+Bellman target clip & $\pm 50$ & chosen so $|V| = 23$--$35$ fits \\
+CQL coefficient $\alpha$ & $0.5$ & from an FQE sweep over \\
+ & & $\{0.5, 1.0, 2.0\}$ \\
+IQL expectile & $0.7$ & \\
+training seeds & $42$--$51$ & ten independent fits per \\
+ & & algorithm (Table~\ref{tab:main}) \\
+\midrule
+\multicolumn{3}{l}{\emph{Selection and evaluation}} \\
+\midrule
+model selection & FQE, $3\times10^4$ iters & episode-disjoint holdout \\
+convergence gate & none & see Section~\ref{sec:results} \\
+evaluation seeds & $50$ shared & disjoint from training \\
+heuristic tuning seeds & $15$ & $80000$--$80014$, disjoint \\
+\bottomrule
+\end{tabular}
+\end{table}

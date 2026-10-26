@@ -1,0 +1,60 @@
+\documentclass[conference]{IEEEtran}
+% IEEE WCNC 2027 -- 6-page hard limit (10pt), single-blind (author names shown).
+% This is the NON-STATIONARY / joint TWT+OFDMA study. It is a separate paper from
+% the earlier submission in wcnc2027-paper/, which is left untouched.
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Do Target Wake Time and Uplink OFDMA Combine?\\
+An Offline Reinforcement Learning Study of Joint\\
+Scheduling in IEEE 802.11ax}
+
+\author{
+\IEEEauthorblockN{Ahmed Selim Anwar, Ahmed Maksud, Joarder Jafor Sadique,\\
+Charles Wiame, and Marcelo Menezes De Carvalho}
+\IEEEauthorblockA{\textit{Department of Electrical Engineering}, \textit{Texas State University},
+San Marcos, TX, USA\\
+Emails: \{ahmed.selim.anwar, poy18, jjsadique, cwiame, mmcarvalho\}@txstate.edu}
+}
+
+\maketitle
+\input{sections/abstract}
+\begin{IEEEkeywords}
+IEEE 802.11ax, Target Wake Time, uplink OFDMA, offline reinforcement learning,
+energy efficiency, conservative Q-learning, off-policy evaluation.
+\end{IEEEkeywords}
+\input{sections/intro}
+\input{sections/related}
+\input{sections/system}
+\input{sections/method}
+\input{sections/setup}
+\input{sections/results}
+\input{sections/conclusion}
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

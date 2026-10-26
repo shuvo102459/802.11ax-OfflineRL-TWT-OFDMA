@@ -1,0 +1,44 @@
+\section{Related Work}
+
+\textbf{TWT scheduling.} TWT has been studied for IoT power
+saving~\cite{chen2019twt}, category-aware grouping~\cite{qiu2021category},
+latency-sensitive traffic~\cite{yang2021twt}, and channel access under
+overlapping BSSs~\cite{chen2022gtso}; recent work treats the schedule itself as
+the object of optimisation~\cite{busacca2026twt}. Karaca~\cite{karaca2020joint}
+optimises the TWT mechanism jointly with scheduling, and Roy et
+al.~\cite{roy2023maximization} maximise timely throughput under TWT, allocating
+OFDMA resources \emph{within} an awake group. These fix a policy by analysis or
+optimisation; we fit one to logged data.
+
+\textbf{Uplink OFDMA scheduling.} A separate line schedules OFDMA without TWT:
+deep RL for the OFDMA MAC~\cite{kotagiri2021distributed}, coexisting latency
+classes~\cite{tan2024drl}, hierarchical RL for joint uplink OFDMA and
+MU-MIMO~\cite{noh2024joint}, multi-agent RL for uplink
+OFDMA~\cite{han2024multiagent,liu2025priority}, and scalable
+polling~\cite{agbeve2025a2p}. Objectives are throughput or delay, and station
+sleep is not part of the control problem. Both mechanisms do appear
+together~\cite{karaca2020joint,roy2023maximization}; what is absent is a
+station-energy account in which the OFDMA decision is controlled per decision
+rather than assumed available, and in which sleeping more competes in the same
+action space.
+
+\textbf{Machine learning for Wi-Fi and radio resource management.} Online RL has
+been applied to contention-window control~\cite{wydmanski2021contention} and to
+the problems above, with exploration on a live network the obstacle to
+deployment. Offline RL~\cite{levine2020offline,prudencio2024survey} removes it
+and pays in distribution shift, addressed by conservative value
+estimation~\cite{kumar2020cql,kostrikov2022iql}. Wireless applications
+concentrate on cellular resource
+management~\cite{yang2024offline,eldeeb2025distributional,eldeeb2026marl}, where
+action spaces are modest; Wi-Fi power save is largely unexamined. We add one
+observation: at this action cardinality, importance-weighted off-policy
+evaluation yields too few effective samples to select a checkpoint, so we rank
+on fitted Q evaluation~\cite{le2019fqe} and validate the ranking.
+
+\textbf{Relation to our own prior work.} Maksud and
+Carvalho~\cite{maksud2026drltwt}, coauthors here, apply online deep RL to
+dynamic TWT scheduling and share the ns-3 scenario and energy accounting with
+this paper. Three things differ: the action adds the per-decision OFDMA bit and
+the group assignment, giving $760$ joint actions; learning is offline, with no
+simulator in the loop; and the question is whether a learned policy beats a
+tuned hand-designed controller on station energy.
