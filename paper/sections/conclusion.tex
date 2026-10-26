@@ -30,14 +30,13 @@ mix and the traffic model are identical across every arm, so the comparisons are
 internally controlled but not shown to transfer. The energy model also mixes two power profiles: the scenario leaves CCA-busy at
 ns-3's default of $273$\,mA, measured on an 802.11n laptop
 card~\cite{halperin2010demystifying}, against its own $66$\,mA receive current,
-so sensing the medium costs more than transmitting on it. Repricing CCA moves
-arm energies by $18$ to $30\,\%$ and unevenly: no ordering changes, but every
-magnitude is conditional on that profile. Since the policies were trained under
-the shipped profile, that repricing measures the same behaviour under a
-different energy model, not the behaviour a policy would have learned under it.
-Finally the logged actions were held for ten decisions, so the data describes
-sustained operation; deploying at that same cadence changes energy by
-$-1.0\,\%$ ($p = 0.12$), so the mismatch does not appear to bite.
+so sensing the medium costs more than transmitting on it. Repricing CCA moves arm energies
+by $18$ to $30\,\%$ and unevenly: no ordering changes, but every magnitude is
+conditional on that profile, and since the policies were trained under the
+shipped one the repricing measures the same behaviour under a different energy
+model. Finally the logged actions were held for ten decisions; deploying at that
+cadence changes energy by $-1.0\,\%$ ($p = 0.12$), so the mismatch does not
+appear to bite.
 
 Whether the substitution reverses at the higher station counts, wider channels
 and larger solicitation sets where uplink OFDMA is expected to pay is the

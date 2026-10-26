@@ -25,9 +25,9 @@ percentage points between the OFDMA arms. Stations sleep just as much; their
 awake time simply costs more.
 
 The PHY-state traces show where it goes. Of the $113.7$\,J of extra energy,
-$69\,\%$ is spent carrier-sense busy and $24\,\%$ receiving; only $9\,\%$ is
+$69\,\%$ is carrier-sense busy and $24\,\%$ receiving; only $9\,\%$ is
 transmission. A solicited station listens through the trigger, the allocation
-and the acknowledgement, and listening is charged at the CCA-busy current.
+and the acknowledgement, charged at the CCA-busy current.
 
 This also tells us what the magnitude depends on. The scenario inherits ns-3's
 default CCA-busy current of $273$\,mA while setting its own receive current to
@@ -46,10 +46,16 @@ stronger form, $166.5$\,J at $19.22$\,Mb/s, as the baseline.
 
 IQL reaches $107.3 \pm 2.6$\,J over ten fits: a $35.6\,\%$ reduction, CI
 $[-36.5,-34.7]\,\%$, $p = 1.8\times10^{-15}$ on fifty paired seeds. Nothing is
-traded for it---throughput rises to $20.76$ from $19.22$\,Mb/s, mean delay
-falls to $2805$ from $2888$\,ms, and budget violations fall to $0.38$ from
-$0.41$. Its worst fit of ten, $112.4$\,J, still beats every other method's
-best.
+traded for it: throughput rises to $20.76$ from $19.22$\,Mb/s and mean delay
+falls by $83$\,ms ($p = 9.8\times10^{-9}$ paired), while the change in budget
+violations is not statistically detectable ($p = 0.07$). Its worst fit of ten,
+$112.4$\,J, still beats every other method's best.
+
+Absolute delays warrant a word: the cell carries a persistent standing queue,
+flat at $2.6$--$2.9$\,s across all $42$ decisions and across every arm,
+including the one with neither mechanism. It reflects queue depth under this
+offered load rather than a response to scheduling, so we read delay as a guard
+against winning by starving traffic, not as a latency claim.
 
 \subsection{Four of five do not, and selection is why}
 
@@ -77,33 +83,31 @@ does not matter.
   \centering
   \includegraphics[width=\columnwidth]{figures/fig_ordering.pdf}
   \caption{Station energy against how often each learned policy enables uplink
-  OFDMA. Bars are the standard deviation over ten training seeds. The
-  association is almost deterministic ($r = 0.981$): the method that learned to
-  stop soliciting is the one that beats the tuned hand-designed controller
-  (dashed).}
+  OFDMA; bars are the standard deviation over ten training seeds. The
+  association is almost deterministic ($r = 0.981$), and the method that learned
+  to stop soliciting is the one that beats the tuned controller (dashed).}
   \label{fig:ordering}
 \end{figure}
 
 \subsection{What separates the methods is the OFDMA bit}
 
 The five methods order by energy exactly as they order by how often they enable
-the scheduler: IQL $0\,\%$, DQN$+$CQL $23\,\%$, dueling DQN$+$CQL $25\,\%$,
-DDQN $43\,\%$ and behaviour cloning $48\,\%$---the last because the logging
-policy chose the OFDMA bit by coin flip, and imitating it reproduces that.
+the scheduler (Fig.~\ref{fig:ordering}): IQL $0\,\%$ through behaviour cloning
+at $48\,\%$---the last because the logging policy chose the OFDMA bit by coin
+flip, and imitating it reproduces that.
 
 The method that learned to stop soliciting is the one that wins. The coordinate
 search concluded the same by a different route---a staged grid over thresholds
 rather than value iteration over $760$ actions---so two optimisers of different
-character agree that at this operating point the mechanisms substitute. The obvious objection is that we crippled the scheduler. ns-3 solicits four
+character agree that at this operating point the mechanisms substitute. The obvious objection is that we crippled the scheduler: ns-3 solicits four
 stations per trigger by default, while schedule~11 leaves eight awake and the
 channel admits nine resource units, so half the awake set was unreachable.
-Raising the limit to nine makes uplink OFDMA worse, not better: $+87.4\,\%$
+Raising the limit to nine makes uplink OFDMA worse, not better---$+87.4\,\%$
 against the no-OFDMA arm instead of $+62.8\,\%$ under the static schedule, and
-$+83.3\,\%$ instead of $+59.5\,\%$ for the hand-designed controller. Both are
-$+15\,\%$ on the default at $p = 2\times10^{-15}$, and throughput falls at each
-step. Solicitation cost scales with the stations a trigger names; the benefit
-scales with the data they have to send, and in this traffic mix they have
-little.
+$+83.3\,\%$ instead of $+59.5\,\%$ for the hand-designed controller, both
+$+15\,\%$ on the default at $p = 2\times10^{-15}$ with throughput falling at
+each step. Solicitation cost scales with the stations a trigger names; the
+benefit scales with the data they have, and in this mix they have little.
 
 \subsection{The result survives the load change}
 
@@ -127,11 +131,11 @@ $\tanh(E/E_0)$ at $E_0=400$\,mJ against an $E$ spanning $1390$ to
 $14{,}167$\,mJ, saturated for $99.99\,\%$ of transitions; retraining all ten
 fits on it costs $13.3$\,J ($120.7 \pm 5.6$ against $107.3 \pm 2.6$,
 $p = 3.6\times10^{-15}$ paired and $1.2\times10^{-4}$ across fits), though it
-still beats the hand-designed controller by $27.5\,\%$, so the repair improves
-the result rather than producing it. Two harnesses measured different windows,
-one including a warm-up burning $26.6\,\%$ of episode energy in $9.8\,\%$ of the
-episode; matched to the $42$-decision window they agree to $4.5\,\%$. Finally
-the scenario deferred each PHY sleep by $8$\,ms whenever the OFDMA bit was set,
+still beats the baseline by $27.5\,\%$, so the repair improves the result
+rather than producing it. Two harnesses measured different windows, one
+including a warm-up burning $26.6\,\%$ of episode energy in $9.8\,\%$ of it;
+matched to the $42$-decision window they agree to $4.5\,\%$. Finally the
+scenario deferred each PHY sleep by $8$\,ms with the OFDMA bit set,
 worth $+62.0\,\%$ on its own---two thirds of the $+92.5\,\%$ we had charged to
 the protocol. Sleep occupancy moved by under $0.8\,\%$ between those arms, which
 is why we first read it as harmless: it changed when stations slept, not how

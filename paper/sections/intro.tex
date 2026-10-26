@@ -50,7 +50,9 @@ policy can enable the scheduler when it pays and disable it when it does not.
 Five offline algorithms are trained on $100{,}235$ transitions logged in ns-3.44
 and compared against hand-designed and non-adaptive baselines.
 
-Our contributions are the following.
+Our contributions are the following.\footnote{Code, the ns-3 scenario and the
+frozen results that generate every table and figure:
+\url{https://github.com/ahmedmaksud/802.11ax-OfflineRL-TWT-OFDMA-WCNC27}}
 \begin{itemize}
 \item A learned policy that cuts station energy by $35.6\,\%$ against a tuned
 hand-designed controller at higher throughput, obtained with no online
@@ -62,8 +64,8 @@ complements at this operating point: enabling OFDMA raises energy at every TWT
 configuration tested, and five independently trained policies order by energy
 exactly as they order by how often each enables it.
 \item A service-period-aligned trigger scheduler that solicits a station only
-while its TWT service period can still contain the whole exchange. It removes a
-race in which a solicited station sleeps before replying, leaving the access
-point waiting on a radio that has switched off, and it halves the measured cost
-of uplink OFDMA.
+while its service period can still contain the whole exchange. It removes a race
+in which a solicited station sleeps before replying, leaving the access point
+waiting on a radio that has switched off, and halves the measured cost of
+uplink OFDMA.
 \end{itemize}

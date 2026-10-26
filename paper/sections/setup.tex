@@ -27,8 +27,8 @@ Nine non-learned scenarios span the configuration space, from no power save to a
 tuned hand-designed controller; Table~\ref{tab:main} lists them.
 
 That controller is the comparator that matters: a delay-triggered hysteresis
-rule that raises the duty cycle when observed delay crosses an upper threshold
-and lowers it below a lower one. Its thresholds, schedule pair and OFDMA mode
-come from a staged coordinate search on the tuning seeds, minimising energy
-subject to a service floor, so it cannot win by refusing traffic. The static
-baseline is chosen the same way.
+rule raising the duty cycle when observed delay crosses an upper threshold and
+lowering it below a lower one. Its thresholds, schedule pair and OFDMA mode come
+from a staged coordinate search on the tuning seeds, minimising energy subject
+to a service floor, so it cannot win by refusing traffic. The static baseline is
+chosen the same way.

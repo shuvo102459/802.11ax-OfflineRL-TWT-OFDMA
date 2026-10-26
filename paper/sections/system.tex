@@ -29,10 +29,9 @@ wake time, with $19$ rules mapping the $16$ stations to groups.
   \centering
   \includegraphics[width=\columnwidth]{figures/fig_system.pdf}
   \caption{The control problem. \emph{Top:} one beacon interval under a
-  two-group TWT schedule; each group sleeps outside its service period.
-  \emph{Bottom:} a trigger exchange, drawn to its own scale. Every station the
-  trigger names stays awake and listening for the whole $5.8$\,ms, which is what
-  makes uplink OFDMA compete with the schedule rather than complement it.}
+  two-group TWT schedule. \emph{Bottom:} a trigger exchange, drawn to its own
+  scale. Every station a trigger names stays awake and listening for the whole
+  $5.8$\,ms, which is what makes uplink OFDMA compete with the schedule.}
   \label{fig:system}
 \end{figure}
 
@@ -44,14 +43,13 @@ simultaneously in a trigger-based PPDU. Contention is replaced by scheduling, at
 a cost: a solicited station must be awake for the trigger and stay awake through
 its reply and the acknowledgement.
 
-This is where the two mechanisms meet. A station outside its service period is
-asleep and cannot be solicited, so uplink OFDMA multiplexes only \emph{within}
-the currently awake group. The schedule bounds how much multiplexing is
-available, and the exchange consumes part of the window it was keeping short.
+This is where the mechanisms meet: a station outside its service period cannot
+be solicited, so uplink OFDMA multiplexes only \emph{within} the awake group,
+and the exchange consumes part of the window the schedule was keeping short.
 
-The degree of multiplexing matters to what follows. The scheduler solicits at
-most four stations per trigger, ns-3's default, while a $20$\,MHz channel admits
-nine $26$-tone resource units. Section~\ref{sec:results} reports both limits.
+The scheduler solicits at most four stations per trigger, ns-3's default, while
+a $20$\,MHz channel admits nine $26$-tone resource units;
+Section~\ref{sec:results} reports both limits.
 
 \subsection{Control problem}
 
