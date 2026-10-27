@@ -31,11 +31,10 @@ trigger, its own transmission and the acknowledgement, and the awake portion
 outside its own transmission is charged at the CCA-busy current.
 
 The scenario leaves CCA-busy at ns-3's default $273$\,mA against its own
-$66$\,mA receive current---an internally inconsistent parameterisation---so we
-re-evaluated every load-bearing arm at $66$\,mA, same policies and seeds.
-Energies fall $21$--$27\,\%$ unevenly, but both conclusions hold: OFDMA costs
-$+57.8\,\%$ rather than $+62.8\,\%$ under the static schedule, and IQL beats
-the controller by $31.2\,\%$ ($84.6$ against $123.1$\,J) rather than
+$66$\,mA receive current, so we re-evaluated every load-bearing arm at
+$66$\,mA with the same policies and seeds. Energies fall $21$--$27\,\%$
+unevenly, yet both conclusions hold: OFDMA costs $+57.8\,\%$ rather than
+$+62.8\,\%$, and IQL beats the controller by $31.2\,\%$ rather than
 $35.6\,\%$. Signs survive the power profile; magnitudes do not.
 
 \subsection{One algorithm beats the tuned rule}
@@ -128,29 +127,35 @@ well? We swept all $20$ schedules at the deployed grouping on the tuning seeds
 with OFDMA off, picked the Pareto-efficient ones from tuning data alone, and
 evaluated those on the untouched evaluation seeds.
 
-None matches IQL. At its energy the best fixed schedule delivers
-$12.62$\,Mb/s against $20.76$---$64\,\%$ more data for the same power, with the
-energy difference undetectable ($p = 0.12$); at its throughput the best fixed
-schedule costs $179.1$\,J against $107.3$, so IQL is $40\,\%$ cheaper. One
-schedule is beaten on both axes at once ($145.4$\,J, $17.93$\,Mb/s), and on the
-tuning seeds no schedule of the twenty comes within $10\,\%$ of IQL's energy at
-$90\,\%$ of its throughput.
+None matches IQL. At its energy the best fixed schedule gives $12.62$\,Mb/s
+against $20.76$---$64\,\%$ more data for the same power, the energy difference
+undetectable ($p = 0.12$); at its throughput the best costs $179.1$\,J against
+$107.3$. One schedule is beaten on both axes at once ($145.4$\,J,
+$17.93$\,Mb/s), and on tuning seeds none of the twenty comes within $10\,\%$
+of IQL's energy at $90\,\%$ of its throughput.
 
 The traces say why. IQL uses $14.9$ distinct actions per $42$-decision
-episode, and the schedules it favours are poor alone: schedule~18 for
-$43\,\%$ of decisions and schedule~19 for $23\,\%$ deliver $15.64$ and
-$12.74$\,Mb/s as fixed policies. Holding either costs about what IQL costs
-while moving a third less data, so the gain is in moving between schedules, not
-in any one. We swept schedules at the deployed grouping only, so this is the
-best fixed \emph{schedule}, not the best of all $380$ configurations.
+episode, and the schedules it favours are poor alone: schedule~18 ($43\,\%$ of
+decisions) and schedule~19 ($23\,\%$) give $15.64$ and $12.74$\,Mb/s as fixed
+policies. Holding either costs about what IQL costs while moving a third less
+data, so the gain is in moving between schedules. We swept schedules at the
+deployed grouping only, so this is the best fixed \emph{schedule}, not of all
+$380$ configurations.
 
 \subsection{Validation}
 
+Dataset and reported runs do not share identical simulator settings. Collection
+predates service-period alignment, using naive triggering and the $8$\,ms
+deferral, while every arm reported here is aligned with the deferral off. The
+deferral is bypassed when the OFDMA bit is clear, so the two coincide on
+OFDMA-off transitions and differ only on the half of the data where the logger
+set the bit---there training charges OFDMA more than deployment does, biasing a
+learner toward disabling it. Table~\ref{tab:main} is unaffected: every arm ran
+aligned.
+
 Four instrumentation faults materially affected earlier evaluations, each
 invisible in aggregate statistics: a convergence gate that discarded a sound
-checkpoint ranking ($6.5\,\%$ energy); a saturated reward energy term
-($13.3$\,J, though the unrepaired reward still beat the baseline by
-$27.5\,\%$); two harnesses whose measurement windows differ by a warm-up; and
-an $8$\,ms sleep deferral applied only with the OFDMA bit set, worth
-$+62.0\,\%$ alone---two thirds of a penalty we had charged to the protocol,
-and one that moved sleep \emph{occupancy} under $0.8\,\%$.
+checkpoint ranking ($6.5\,\%$ energy), a saturated reward energy term
+($13.3$\,J), mismatched measurement windows, and the deferral above
+($+62.0\,\%$ alone, yet moving sleep \emph{occupancy} under $0.8\,\%$). Each
+is quantified in the artefact.

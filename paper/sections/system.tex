@@ -7,13 +7,11 @@ We consider a single basic service set: one access point and $N = 16$ stations
 on a 20\,MHz 802.11ax channel, with a beacon interval of
 $T_{\mathrm{BI}} = 102.4$\,ms. All traffic is uplink.
 
-Stations belong to four device classes, four stations each, chosen to represent
-the mixed traffic of a real deployment: a low-rate IoT sensor, a video camera, a
-voice assistant and a video streamer. Their offered IP-layer loads are
-$0.058$, $2.037$, $0.030$ and $3.400$\,Mb/s respectively, giving
-$22.1$\,Mb/s in aggregate. The access point acts once every
-$\Delta = 20$ beacon intervals, or $2.048$\,s, giving $42$ decisions per
-episode.
+Stations belong to four device classes, four each, representing mixed traffic:
+a low-rate IoT sensor, a video camera, a voice assistant and a video streamer,
+offering $0.058$, $2.037$, $0.030$ and $3.400$\,Mb/s respectively for
+$22.1$\,Mb/s in aggregate. The access point acts once every $\Delta = 20$
+beacon intervals, or $2.048$\,s: $42$ decisions per episode.
 
 \subsection{Target Wake Time}
 

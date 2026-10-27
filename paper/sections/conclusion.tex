@@ -17,17 +17,15 @@ energy at every TWT configuration tested, and both a learned policy and an
 independent coordinate search disable it when free to choose.
 
 Four limits bound these claims. The topology is one basic service set, sixteen
-stations and $20$\,MHz, with at most four stations solicited per trigger
-against the nine resource units the channel admits; we tested four and nine and
-the result held at both, but not beyond them. The station mix and traffic model
-are identical across every arm, so comparisons are internally controlled but
-not shown to transfer. The energy model leaves CCA-busy at ns-3's default
-$273$\,mA against its own $66$\,mA receive current, an internally inconsistent
-parameterisation; re-evaluating at $66$\,mA moves arm energies by $21$ to
-$27\,\%$ unevenly yet changes no ordering, though the policies were trained
-under the shipped profile. Finally the logged actions were held for ten
-decisions, and deploying at that cadence changes energy by $-1.0\,\%$
-($p = 0.12$).
+stations and $20$\,MHz, soliciting at most four stations per trigger against
+nine resource units; we tested four and nine, not beyond. Station mix and
+traffic model are identical across every arm, so comparisons are internally
+controlled but not shown to transfer. The energy model leaves CCA-busy at ns-3's
+default $273$\,mA against its own $66$\,mA receive current; re-evaluating at
+$66$\,mA moves energies $21$--$27\,\%$ unevenly yet changes no ordering.
+Finally the logged actions were held for ten decisions and collected before
+service-period alignment, so training and deployment differ on the OFDMA-on
+half of the data.
 
 Whether the substitution reverses at higher station counts, wider channels and
 larger solicitation sets is the natural next step, alongside a sourced power

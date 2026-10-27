@@ -48,13 +48,12 @@ action set makes unnecessary.
 \subsection{Checkpoint selection}
 
 Selecting a checkpoint without touching the network is itself a problem.
-Importance sampling is weak here: the logger is uniform only at the ten-step
-refresh points, so the per-transition propensity is not $1/760$ and a match
-count does not characterise the effective sample size. Either way the overlap
-with a deterministic policy is small---tens of matching state-action pairs among
-$15{,}025$ held-out transitions. We rank by fitted Q
-evaluation~\cite{le2019fqe} on held-out episode starts, and validate that
-ranking against the simulator rather than assume it sound.
+Importance sampling is weak: the logger is uniform only at the ten-step refresh
+points, so the per-transition propensity is not $1/760$ and a match count does
+not characterise the effective sample size. Either way the overlap with a
+deterministic policy is small---tens of matching pairs among $15{,}025$
+held-out transitions. We rank by fitted Q evaluation~\cite{le2019fqe} on
+held-out episode starts and validate that ranking against the simulator.
 
 \begin{algorithm}[t]
 \caption{Offline joint TWT/OFDMA control}
