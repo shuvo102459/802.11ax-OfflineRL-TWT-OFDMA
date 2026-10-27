@@ -12,7 +12,7 @@ right~\cite{busacca2026twt,liu2025priority}.
 
 The two mechanisms are normally configured in isolation. TWT studies fix the
 OFDMA setting, and OFDMA studies fix or ignore the sleep
-schedule~\cite{karaca2020joint,noh2024joint,agbeve2025a2p}. This leaves the
+schedule~\cite{karaca2020joint,noh2024joint}. This leaves the
 joint setting unexamined, which matters because the mechanisms compete. A
 trigger frame is only useful to a station that is awake to receive it, so every
 OFDMA round draws on the airtime and the radio states that TWT is trying to
@@ -56,8 +56,9 @@ frozen results that generate every table and figure:
 \begin{itemize}
 \item A policy learned without online interaction or expert-set thresholds that
 cuts station energy against a tuned hand-designed controller at higher
-throughput, holding across ten training runs, on both constant and stepped load,
-and against every fixed schedule in the catalogue.
+throughput, holding across ten training runs and against every fixed schedule
+tested---its advantage coming from switching schedules, not from finding a
+better static one.
 \item Evidence that at this operating point enabling the uplink scheduler
 raises energy at every TWT configuration tested, with five independently trained
 policies ordering by energy as they order by how often each enables it.

@@ -33,8 +33,7 @@ We log $2{,}404$ episodes, $100{,}235$ transitions (Alg.~\ref{alg:pipeline}).
 The ten-decision hold is deliberate: with a fresh draw every decision, measured
 energy is flat against schedule tightness, and only a sustained schedule makes
 the gradient visible. Uniform sampling gives broad nominal coverage but does not concentrate data on
-high-performing trajectories, which is why behaviour cloning finishes last
-here. Splits are by episode, never by transition: $2{,}043$ training, $361$
+high-performing trajectories---why behaviour cloning finishes last here. Splits are by episode, never by transition: $2{,}043$ training, $361$
 held out. Episodes may truncate when the simulator ends a run---$83$ of
 $2{,}404$ carry fewer than $42$ transitions---and truncated states are
 bootstrapped, not treated as terminal. We train behaviour cloning, DQN+CQL,

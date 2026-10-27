@@ -1,0 +1,33 @@
+{
+  "n_episodes": 500,
+  "distinct_actions_mean": 14.924,
+  "distinct_actions_max": 25,
+  "decisions_per_episode": 42,
+  "modal_schedule_share": {
+    "18": 42.6,
+    "19": 22.6,
+    "17": 17.8,
+    "14": 8.6,
+    "15": 4.6,
+    "16": 3.8
+  },
+  "top3_as_static_policy": {
+    "s18": {
+      "J": 129.47510262654623,
+      "tput": 15.63514384920635
+    },
+    "s19": {
+      "J": 108.34061346740722,
+      "tput": 12.735955927579367
+    },
+    "s17": {
+      "J": 113.37554983418782,
+      "tput": 13.787885714285714
+    }
+  },
+  "iql_eval": {
+    "J": 107.3,
+    "tput": 20.76
+  },
+  "note": "IQL's most-used schedules are poor as static policies; the gain is in switching."
+}
