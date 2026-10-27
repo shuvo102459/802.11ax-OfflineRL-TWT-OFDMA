@@ -3,9 +3,9 @@
 
 \subsection{Simulator and parameters}
 
-All experiments use ns-3.44 with the ns3-ai interface, which lets a Python
-policy act in a running simulation. Table~\ref{tab:config} lists every
-parameter, naming the sweep wherever one chose the value.
+All experiments use ns-3.44 with the ns3-ai interface. Table~\ref{tab:config}
+lists the key parameters, naming the sweep wherever one chose the value; the
+full configuration ships with the artefact.
 
 \input{tables/tab_config}
 
@@ -15,20 +15,21 @@ Three disjoint seed sets are used, so no policy is evaluated on data that
 informed it: collection from $30000$, tuning on $80000$--$80014$, and all
 reported results on $90000$--$90049$.
 
-The fifty evaluation seeds are \emph{paired}: a seed fixes the traffic, the time
-of any load change and its multiplier, so every policy meets an identical
-environment. Pairing removes environment variance, which is what lets fifty
-seeds resolve differences that would otherwise need many more. Energy is
-reported over the $42$-decision control window, excluding the warm-up.
+The fifty evaluation seeds are \emph{paired}: a seed fixes the traffic, the
+time of any load change and its multiplier, so every policy meets an identical
+environment. Pairing reduces the variance associated with those shared
+conditions, which is what lets fifty seeds resolve differences that would
+otherwise need many more. Energy is reported over the $42$-decision control
+window, excluding the warm-up.
 
 \subsection{Baselines}
 
-Nine non-learned scenarios span the configuration space, from no power save to a
-tuned hand-designed controller; Table~\ref{tab:main} lists them.
+Nine non-learned scenarios span the configuration space, from no power save to
+a tuned hand-designed controller (Table~\ref{tab:main}).
 
-That controller is the comparator that matters: a delay-triggered hysteresis
-rule raising the duty cycle when observed delay crosses an upper threshold and
-lowering it below a lower one. Its thresholds, schedule pair and OFDMA mode come
-from a staged coordinate search on the tuning seeds, minimising energy subject
-to a service floor, so it cannot win by refusing traffic. The static baseline is
-chosen the same way.
+The primary adaptive comparator is a hysteresis rule that raises the duty cycle
+when the observed backlog proxy crosses an upper threshold and lowers it below a
+lower one. Its thresholds, schedule pair and OFDMA mode come from a staged
+coordinate search on the tuning seeds, minimising energy subject to a service
+floor: mean throughput at least $95\,\%$ of the highest any candidate in that
+sweep achieves, so it cannot win by refusing traffic. The static baseline is chosen the same way.

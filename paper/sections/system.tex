@@ -19,37 +19,35 @@ episode.
 
 A TWT schedule partitions the beacon interval into $K$ service periods of
 durations $\{w_1, \dots, w_K\}$. Each station is assigned to one group, and
-group $k$ is awake from $\sum_{j<k} w_j$ to $\sum_{j \le k} w_j$ within every
-beacon interval and sleeps outside it. Staggering groups means fewer stations
-contend at once, at the cost of a shorter window each. We use a catalogue of
-$20$ schedules spanning one to four service periods and $20$--$90$\,ms of total
-wake time, with $19$ rules mapping the $16$ stations to groups.
+group $k$ is awake from $\sum_{j<k} w_j$ to $\sum_{j \le k} w_j$ in every
+beacon interval and sleeps outside it, so staggering trades contention against
+window length. The catalogue holds $20$ schedules spanning one to four service
+periods and $20$--$90$\,ms of wake time, with $19$ rules mapping the $16$
+stations to groups. One-group schedules make several rules coincide, so the
+$760$ encoded actions realise fewer distinct configurations.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{figures/fig_system.pdf}
-  \caption{The control problem. \emph{Top:} one beacon interval under a
-  two-group TWT schedule. \emph{Bottom:} a trigger exchange, drawn to its own
-  scale. Every station a trigger names stays awake and listening for the whole
-  $5.8$\,ms, which is what makes uplink OFDMA compete with the schedule.}
+  \caption{\emph{Top:} one beacon interval under a two-group TWT schedule.
+  \emph{Bottom:} a trigger exchange on its own scale. A solicited station is
+  awake for the whole exchange---receiving, then transmitting its own
+  reply---and the scheduler reserves the $5.8$\,ms worst case before admitting
+  one, which is what makes uplink OFDMA compete with the schedule.}
   \label{fig:system}
 \end{figure}
 
 \subsection{Uplink OFDMA}
 
-When uplink OFDMA is enabled, the access point sends a trigger frame naming a
+When uplink OFDMA is enabled the access point sends a trigger frame naming a
 set of stations and the resource unit each may use; those stations reply
-simultaneously in a trigger-based PPDU. Contention is replaced by scheduling, at
-a cost: a solicited station must be awake for the trigger and stay awake through
-its reply and the acknowledgement.
-
-This is where the mechanisms meet: a station outside its service period cannot
-be solicited, so uplink OFDMA multiplexes only \emph{within} the awake group,
-and the exchange consumes part of the window the schedule was keeping short.
-
-The scheduler solicits at most four stations per trigger, ns-3's default, while
-a $20$\,MHz channel admits nine $26$-tone resource units;
-Section~\ref{sec:results} reports both limits.
+simultaneously in a trigger-based PPDU. Contention is replaced by scheduling at
+a cost: a solicited station is awake for the whole exchange. This is where the
+mechanisms meet---a station outside its service period cannot be solicited, so
+OFDMA multiplexes only \emph{within} the awake group while consuming part of
+the window the schedule was keeping short. The scheduler solicits at most four
+stations per trigger, ns-3's default, against the nine $26$-tone resource units
+a $20$\,MHz channel admits; Section~\ref{sec:results} reports both.
 
 \subsection{Control problem}
 

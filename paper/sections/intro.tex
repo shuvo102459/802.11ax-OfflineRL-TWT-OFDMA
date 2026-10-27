@@ -33,39 +33,36 @@ degradation~\cite{wydmanski2021contention,yang2024offline}. Neither extreme is
 satisfactory for a deployed access point.
 
 Offline reinforcement learning occupies the space between
-them~\cite{levine2020offline}. A policy is trained from an
-already-collected dataset and never acts on the network while learning, so it
-needs neither exploration nor an expert to label the right action. The price is
+them~\cite{levine2020offline}. A policy is trained from an already-collected
+dataset and never acts on the network while learning, so it needs neither
+exploration nor expert-labelled actions---though the state features, reward and
+action catalogue remain design choices. The price is
 distribution shift, for which conservative value estimation is the standard
 remedy~\cite{kumar2020cql,kostrikov2022iql}. Its wireless applications
 concentrate on cellular resource
 management~\cite{yang2024offline,eldeeb2026marl}, leaving Wi-Fi power save
 largely unexamined.
 
-We apply it to joint TWT and OFDMA control. Once per decision window the access
-point selects a TWT schedule, a station-to-group assignment, and whether uplink
-OFDMA is enabled---a 760-way discrete action. Making the OFDMA bit part of the
-action, rather than a property of the run, is what makes the problem joint: the
-policy can enable the scheduler when it pays and disable it when it does not.
-Five offline algorithms are trained on $100{,}235$ transitions logged in ns-3.44
-and compared against hand-designed and non-adaptive baselines.
+We apply it to joint TWT and OFDMA control. Once per decision window the
+access point selects a TWT schedule, a station-to-group assignment and whether
+uplink OFDMA is enabled---a 760-way discrete action. Making the OFDMA bit part
+of the action rather than a property of the run is what makes the problem
+joint. Five offline algorithms are trained on $100{,}235$ transitions logged in
+ns-3.44 and compared against hand-designed and non-adaptive baselines.
 
 Our contributions are the following.\footnote{Code, the ns-3 scenario and the
 frozen results that generate every table and figure:
 \url{https://github.com/ahmedmaksud/802.11ax-OfflineRL-TWT-OFDMA-WCNC27}}
 \begin{itemize}
-\item A learned policy that cuts station energy by $35.6\,\%$ against a tuned
-hand-designed controller at higher throughput, obtained with no online
-interaction and no expert to set its thresholds. It holds across ten independent
-training runs, and separately on the seeds whose offered load steps mid-episode
-and on those whose load is constant.
-\item Evidence that uplink OFDMA and TWT act as substitutes rather than
-complements at this operating point: enabling OFDMA raises energy at every TWT
-configuration tested, and five independently trained policies order by energy
-exactly as they order by how often each enables it.
+\item A policy learned without online interaction or expert-set thresholds that
+cuts station energy against a tuned hand-designed controller at higher
+throughput, holding across ten training runs, on both constant and stepped load,
+and against every fixed schedule in the catalogue.
+\item Evidence that at this operating point enabling the uplink scheduler
+raises energy at every TWT configuration tested, with five independently trained
+policies ordering by energy as they order by how often each enables it.
 \item A service-period-aligned trigger scheduler that solicits a station only
-while its service period can still contain the whole exchange. It removes a race
-in which a solicited station sleeps before replying, leaving the access point
-waiting on a radio that has switched off, and halves the measured cost of
-uplink OFDMA.
+while its service period can contain the whole exchange, removing a race in
+which a solicited station sleeps before replying and halving the measured cost
+of uplink OFDMA.
 \end{itemize}

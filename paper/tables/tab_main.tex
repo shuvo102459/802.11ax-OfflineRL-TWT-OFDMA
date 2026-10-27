@@ -9,17 +9,21 @@ is tuned on disjoint seeds under a service floor; the row marked
 off. Learned rows give the mean and standard deviation over $10$ training
 seeds. The last three columns compare each learned method against the
 \emph{free choice} controller at $166.5$\,J, Wilcoxon signed-rank:
-\emph{typical} uses the per-seed mean over the ten fits, which is what
-training once yields, and \emph{best} uses the single lowest-energy fit,
-which can only be identified by measuring all ten on the network.}
+\emph{mean over runs} averages the ten fits per seed; \emph{oracle}
+is each method's lowest-energy fit, selected on the same evaluation seeds
+it is scored on, and is therefore retrospective. \emph{backlog} is a
+drain-time proxy, per-station queue bytes over that station's offered
+rate, averaged over stations and decisions; it is not a measured packet
+latency. $>$3\,s is the fraction of decisions whose mean proxy exceeds
+three seconds. OFDMA: share of decisions with the scheduler enabled.}
 \label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
- & & & & & & \multicolumn{2}{c}{typical fit} & best fit \\
+ & & & & & & \multicolumn{2}{c}{mean over runs} & oracle \\
 \cmidrule(lr){7-8}\cmidrule(lr){9-9}
-Scenario & $E$ (J) & tput (Mb/s) & delay (ms) & viol. & OFDMA & $\Delta$ vs hand & $p$ & $\Delta$ vs hand \\
+Scenario & $E$ (J) & tput (Mb/s) & backlog (ms) & $>$3\,s & OFDMA & $\Delta$ vs hand & $p$ & $\Delta$ vs hand \\
 \midrule
 No TWT, no OFDMA & $441.1$ & $24.95$ & $2637$ & $0.24$ & $0\,\%$ & & & \\
 Static TWT & $173.3$ & $21.03$ & $2789$ & $0.37$ & $0\,\%$ & & & \\
@@ -27,7 +31,7 @@ Static TWT $+$ OFDMA & $282.2$ & $19.82$ & $2823$ & $0.40$ & $100\,\%$ & & & \\
 Random TWT & $171.1$ & $14.47$ & $3159$ & $0.63$ & $0\,\%$ & & & \\
 Random TWT $+$ OFDMA & $228.5$ & $13.51$ & $3188$ & $0.66$ & $100\,\%$ & & & \\
 OFDMA only, no TWT & $477.8$ & $24.30$ & $2652$ & $0.25$ & $100\,\%$ & & & \\
-Random joint, no TWT & $198.8$ & $14.29$ & $3157$ & $0.63$ & $48\,\%$ & & & \\
+Random joint action & $198.8$ & $14.29$ & $3157$ & $0.63$ & $48\,\%$ & & & \\
 Hand-designed, OFDMA on & $265.5$ & $18.37$ & $2904$ & $0.43$ & $100\,\%$ & & & \\
 Hand-designed, \emph{free choice} & $166.5$ & $19.22$ & $2888$ & $0.41$ & $0\,\%$ & & & \\
 \midrule

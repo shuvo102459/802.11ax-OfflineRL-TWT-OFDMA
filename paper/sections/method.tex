@@ -3,49 +3,59 @@
 
 \subsection{State and reward}
 
-The state is a $130$-dimensional vector: two aggregate terms, then eight
-features per station. Per station these are throughput, a normalised demand
-deficit, three scaled backlog indicators, energy efficiency, drops and energy
-drawn. All are deltas over the preceding decision window. The state carries no
-clock, so a policy cannot infer the schedule from time alone.
+The state is $2 + 16\times 8 = 130$-dimensional: total throughput and a
+proportional-fairness index, then per station throughput, normalised backlog,
+three buffer-occupancy indicators, energy efficiency, drops and energy drawn.
+Rates and indicators are window statistics, counts are deltas over the
+preceding window. No clock is included, though backlog correlates with elapsed
+time.
 
-The reward combines a per-station term $r_{\mathrm{sum}}$, Jain fairness
-$r_{\mathrm{fair}}$, and a network term $r_{\mathrm{net}}$ containing an energy
-penalty. We use
+The reward combines a per-station term and a fairness term. Each station
+contributes $r_i$, a weighted sum of $\tanh$-scaled throughput, energy
+efficiency and energy, a bonus for low buffer occupancy and a duty-cycle
+penalty; $r_{\mathrm{sum}} = \sum_i r_i$ over stations active in the window
+and $r_{\mathrm{fair}}$ is Jain's index over $\{r_i\}$. Energy enters
+separately and explicitly, replacing the saturated term we inherited:
 \begin{equation}
 r = 0.30\,z\!\left(-\tanh\frac{E}{E^{*}}\right) + 0.55\,z(r_{\mathrm{sum}})
     + 0.15\,z(r_{\mathrm{fair}}),
 \label{eq:reward}
 \end{equation}
-where $E$ is the per-decision energy summed over stations, $E^{*} = 8000$\,mJ,
-and $z(\cdot)$ is standardised on the training split alone. The energy scale
-matters: the formulation we inherited used $E_0 = 400$\,mJ, which saturates the
-$\tanh$ across the whole operating range and leaves the reward insensitive to
-energy. Section~\ref{sec:results} quantifies what that correction is worth.
+where $E$ is the per-decision energy summed over stations, $E^{*}=8000$\,mJ,
+and $z(\cdot)$ subtracts the mean and divides by the standard deviation of that
+component on the training split alone. This is a weighted surrogate, not a
+constrained optimisation: throughput is an evaluation criterion, not a
+guaranteed floor on the learned policy.
 
 \subsection{Dataset and training}
 
 We log $2{,}404$ episodes, $100{,}235$ transitions (Alg.~\ref{alg:pipeline}).
 The ten-decision hold is deliberate: with a fresh draw every decision, measured
 energy is flat against schedule tightness, and only a sustained schedule makes
-the gradient visible. A uniform behaviour policy is also the conservative
-choice. It is the hardest case for offline RL, because the data contains no
-competent trajectory to imitate---which is why behaviour cloning finishes last
-here---so a deployment logging from a working controller would start from
-strictly better coverage of the actions worth taking. Splits are by episode, never by transition---$2{,}043$
-training, $361$ held out---and we train behaviour cloning, DQN+CQL, Double DQN,
-dueling DQN+CQL and IQL~\cite{kumar2020cql,vanhasselt2016ddqn,kostrikov2022iql}
-at ten initialisations each.
+the gradient visible. Uniform sampling gives broad nominal coverage but does not concentrate data on
+high-performing trajectories, which is why behaviour cloning finishes last
+here. Splits are by episode, never by transition: $2{,}043$ training, $361$
+held out. Episodes may truncate when the simulator ends a run---$83$ of
+$2{,}404$ carry fewer than $42$ transitions---and truncated states are
+bootstrapped, not treated as terminal. We train behaviour cloning, DQN+CQL,
+Double DQN, dueling DQN+CQL and
+IQL~\cite{kumar2020cql,vanhasselt2016ddqn,kostrikov2022iql} at ten
+initialisations each. Ours is the discrete-action IQL: expectile regression for
+$V_\psi$ and the SARSA-style target $r + \gamma V_\psi(s')$ for $Q_\theta$
+as in~\cite{kostrikov2022iql}, but with the policy extracted by
+$\arg\max_a Q$ rather than by advantage-weighted cloning, which a finite
+action set makes unnecessary.
 
 \subsection{Checkpoint selection}
 
 Selecting a checkpoint without touching the network is itself a problem.
-Importance-sampling estimates are degenerate here: for a deterministic policy
-against a behaviour policy uniform over $A$ actions, the effective sample size
-reduces to the state-action matches---a few hundred out of $15{,}025$ held-out
-transitions. We therefore rank by fitted Q evaluation~\cite{le2019fqe}, fitting
-a critic on the training split and evaluating at held-out episode starts, and
-validate that ranking against the simulator rather than assume it sound.
+Importance sampling is weak here: the logger is uniform only at the ten-step
+refresh points, so the per-transition propensity is not $1/760$ and a match
+count does not characterise the effective sample size. Either way the overlap
+with a deterministic policy is small---tens of matching state-action pairs among
+$15{,}025$ held-out transitions. We rank by fitted Q
+evaluation~\cite{le2019fqe} on held-out episode starts, and validate that
+ranking against the simulator rather than assume it sound.
 
 \begin{algorithm}[t]
 \caption{Offline joint TWT/OFDMA control}
@@ -61,9 +71,10 @@ validate that ranking against the simulator rather than assume it sound.
          \COMMENT{no simulator}
 \ENDFOR
 \STATE \textbf{Deploy} $\theta^{(k^\star)}$: each decision, take
-      $a_t = \arg\max_a Q(s_t,a)$, decode $(b_t, s^{\mathrm{sched}}_t, g_t)$,
-      and if $b_t$ solicit only stations whose service period has
-      $\ge 5.8$\,ms left
+      $a_t = \pi_m(s_t)$, decode $(b_t, s^{\mathrm{sched}}_t, g_t)$, and if
+      $b_t$ solicit only stations whose service period can still hold a whole
+      exchange \COMMENT{$\pi_m$: $\arg\max_a Q$ for the value-based methods,
+      $\arg\max_a \mathrm{softmax}(f_\phi(s))$ for BC}
 \end{algorithmic}
 \end{algorithm}
 

@@ -258,6 +258,30 @@ Two comparisons are reported per algorithm, and they answer different questions:
 The gap between those columns is the paper's sharpest point: **checkpoint
 selection, not policy optimisation, is the remaining difficulty.**
 
+### Does the learned policy beat the best fixed configuration?
+
+Both reviewers asked the decisive question: IQL and the tuned controller *both*
+disable uplink OFDMA, so the gap cannot come from that bit. Would one
+well-chosen static schedule do as well? We swept all 20 schedules on the tuning
+seeds, picked the Pareto-efficient ones from tuning data alone, and evaluated
+them on the untouched evaluation seeds
+(`eval-scripts/7-fixed-action-sweep.sh`, `8-fixed-action-eval.sh`):
+
+| fixed schedule | energy | throughput | IQL vs it |
+|---|---|---|---|
+| s9 | 83.1 J | 9.56 Mb/s | +29.1 % energy, **+117 % tput** |
+| s8 | 105.6 J | 12.62 | +1.6 % (*p*=0.12), **+64.5 % tput** |
+| s7 | 145.4 J | 17.93 | **−26.2 % energy AND +15.8 % tput** |
+| s10 | 165.1 J | 19.08 | −35.0 % energy, +8.8 % tput |
+| s6 | 179.1 J | 21.98 | **−40.1 % energy**, −5.6 % tput |
+| s5 | 194.1 J | 23.40 | −44.7 % energy, −11.3 % tput |
+| **IQL** | **107.3 J** | **20.76** | |
+
+**No fixed schedule beats IQL on both axes.** At IQL's energy the best static
+schedule moves 64 % less data; at IQL's throughput the best static schedule
+costs 40 % more energy; s7 is beaten on both at once. The advantage is not the
+discovery of one good static schedule.
+
 ### Robustness to the power model
 
 The scenario leaves CCA-busy at ns-3's default 273 mA against its own 66 mA
