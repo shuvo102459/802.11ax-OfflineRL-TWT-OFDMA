@@ -64,7 +64,7 @@ touch "$HERE/results/CCA66V2_DONE"
 import glob, json
 import numpy as np
 from scipy import stats
-H="/home/shuvo/NS3-project/ns-allinone-3.44/ns-3.44/contrib/ai/examples/MobiCom/twt/wcnc2027-v3-nonstationary"
+H="$ROOT"
 def load(d):
     o={}
     for f in glob.glob(f"{H}/results/final/{d}/*.json"):

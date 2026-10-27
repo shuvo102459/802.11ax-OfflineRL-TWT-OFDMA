@@ -4,7 +4,6 @@
 ![Python](https://img.shields.io/badge/Python-3.11-green)
 ![WiFi](https://img.shields.io/badge/IEEE-802.11ax-orange)
 ![RL](https://img.shields.io/badge/Offline%20RL-IQL%20%7C%20CQL%20%7C%20BC-red)
-![Paper](https://img.shields.io/badge/Paper-WCNC%202027-lightgrey)
 
 **Do Target Wake Time and Uplink OFDMA Combine? An Offline Reinforcement
 Learning Study of Joint Scheduling in IEEE 802.11ax**
@@ -28,7 +27,7 @@ Charles Wiame, Marcelo Menezes De Carvalho
 **PI:** Dr. Marcelo Menezes De Carvalho, Department of Electrical Engineering,
 Texas State University
 
-**Paper:** [`paper/wcnc2027-twt-ofdma-offline-rl.pdf`](paper/wcnc2027-twt-ofdma-offline-rl.pdf)
+**Paper:** [`paper/paper.pdf`](paper/paper.pdf)
 
 ---
 
@@ -43,7 +42,7 @@ NS3-project/
     └── ns-3.44/
         ├── contrib/ai/                       <- ns3-ai
         └── contrib/ai/examples/MobiCom/twt/
-            └── 802.11ax-OfflineRL-TWT-OFDMA-WCNC27/   <- this repo
+            └── 802.11ax-OfflineRL-TWT-OFDMA/   <- this repo
 ```
 
 Python 3.11 with `numpy`, `scipy`, `matplotlib`:
@@ -60,12 +59,12 @@ cd $NS3/contrib/ai/examples/MobiCom/twt
 git clone https://github.com/shuvo102459/802.11ax-OfflineRL-TWT-OFDMA
 
 # 2. register the scenario
-cp 802.11ax-OfflineRL-TWT-OFDMA-WCNC27/twt-ofdma-main-simulation.cc \
+cp 802.11ax-OfflineRL-TWT-OFDMA/twt-ofdma-main-simulation.cc \
    $NS3/scratch/scenario4-rl-agent/scenario4_rl_twt_ofdma.cc
 cd $NS3 && ./ns3 build scenario4_rl_twt_ofdma
 
 # 3. run the whole pipeline (long -- see section 8 for stage times)
-cd contrib/ai/examples/MobiCom/twt/802.11ax-OfflineRL-TWT-OFDMA-WCNC27
+cd contrib/ai/examples/MobiCom/twt/802.11ax-OfflineRL-TWT-OFDMA
 ./run_all.sh
 
 # 4. or just rebuild the paper from the frozen results
@@ -389,7 +388,7 @@ Stated plainly, because they bound what the results mean.
 ## 10. Quick Reference
 
 ```
-802.11ax-OfflineRL-TWT-OFDMA-WCNC27/
+802.11ax-OfflineRL-TWT-OFDMA/
 ├── twt-ofdma-main-simulation.cc    ns-3.44 scenario (AP, 16 STAs, TWT+OFDMA)
 ├── run_all.sh                      one-stop pipeline, resumable
 ├── collect-scripts/                1-3  dataset collection and reward build

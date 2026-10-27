@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# resumable.sh -- shared restart-safe execution for every wcnc2027-v2 phase
+# resumable.sh -- shared restart-safe execution for every runner in this repo.
 # =============================================================================
 # A forced shutdown killed a sweep mid-flight and the work was only recoverable
 # because the ns-3 scenario happens to truncate its CSVs on open. That is luck,
