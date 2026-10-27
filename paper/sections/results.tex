@@ -5,8 +5,8 @@
 
 \subsection{The two mechanisms do not combine}
 
-Table~\ref{tab:main} holds three pairs differing only in the OFDMA bit, and in
-each enabling it costs energy: $+62.8\,\%$ under the static schedule,
+Table~\ref{tab:main} holds three pairs differing only in the OFDMA bit, and
+each time enabling it costs energy: $+62.8\,\%$ under the static schedule,
 $+33.6\,\%$ under random TWT, $+8.3\,\%$ with TWT off.
 
 Throughput falls in all three, so this is not a throughput-for-energy trade.
@@ -43,8 +43,8 @@ Given a free choice the tuned controller disables OFDMA, worth $99$\,J
 ($265.5$ against $166.5$\,J); we take that stronger form as the baseline.
 
 
-IQL reaches $107.3 \pm 2.6$\,J, the spread being the standard deviation over
-ten training runs, not a confidence interval. That is a $35.6\,\%$ reduction;
+IQL reaches $107.3 \pm 2.6$\,J (Fig.~\ref{fig:results}a), the spread being the
+standard deviation over ten training runs, not a confidence interval. That is a $35.6\,\%$ reduction;
 the interval $[-36.5,-34.7]\,\%$ is a paired bootstrap over the fifty shared
 seeds of the per-seed mean across runs, and $p = 1.8\times10^{-15}$ is a
 two-sided Wilcoxon signed-rank test on the same pairing. Neither propagates
@@ -86,21 +86,20 @@ does not matter.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_ordering.pdf}
-  \caption{Station energy against how often each learned policy enables uplink
-  OFDMA; bars are the standard deviation over ten training runs. The association
-  across these five algorithm-level means is strong ($r = 0.981$, $n=5$) but
-  descriptive: the methods differ in schedule and grouping too. Dashed: the
-  tuned controller.}
-  \label{fig:ordering}
+  \includegraphics[width=\columnwidth]{figures/fig_results.pdf}
+  \caption{\emph{(a)} Mean station energy per scenario over the $50$ paired
+  seeds, $95\,\%$ bootstrap intervals, learned rows averaging ten training
+  runs. \emph{(b)} The schedule IQL selects at each of the $42$ decisions of a
+  stepped-load episode; dashed line, the load change.}
+  \label{fig:results}
 \end{figure}
 
 \subsection{What separates the methods is the OFDMA bit}
 
 The five methods order by energy as they order by how often they enable the
-scheduler (Fig.~\ref{fig:ordering}), from IQL at $0\,\%$ to behaviour cloning
-at $48\,\%$---the last because the logger chose the bit by coin flip and
-imitating it reproduces that.
+scheduler, from IQL at $0\,\%$ to behaviour cloning at $48\,\%$---the last
+because the logger chose the bit by coin flip and imitating it reproduces
+that.
 
 The lowest-energy method is the one that disables the scheduler, and the
 coordinate search reaches the same configuration independently. The obvious objection is that we crippled the scheduler: ns-3 solicits four
@@ -130,12 +129,12 @@ evaluated those on the untouched evaluation seeds.
 None matches IQL. At its energy the best fixed schedule gives $12.62$\,Mb/s
 against $20.76$---$64\,\%$ more data for the same power, the energy difference
 undetectable ($p = 0.12$); at its throughput the best costs $179.1$\,J against
-$107.3$. One schedule is beaten on both axes at once ($145.4$\,J,
-$17.93$\,Mb/s), and on tuning seeds none of the twenty comes within $10\,\%$
-of IQL's energy at $90\,\%$ of its throughput.
+$107.3$. One is beaten on both axes at once ($145.4$\,J, $17.93$\,Mb/s), and
+on tuning seeds none of the twenty comes within $10\,\%$ of IQL's energy at
+$90\,\%$ of its throughput.
 
-The traces say why. IQL uses $14.9$ distinct actions per $42$-decision
-episode, and the schedules it favours are poor alone: schedule~18 ($43\,\%$ of
+The traces say why (Fig.~\ref{fig:results}b). IQL uses $14.9$ distinct actions
+per $42$-decision episode, and the schedules it favours are poor alone: schedule~18 ($43\,\%$ of
 decisions) and schedule~19 ($23\,\%$) give $15.64$ and $12.74$\,Mb/s as fixed
 policies. Holding either costs about what IQL costs while moving a third less
 data, so the gain is in moving between schedules. We swept schedules at the
@@ -144,14 +143,13 @@ $380$ configurations.
 
 \subsection{Validation}
 
-Dataset and reported runs do not share identical simulator settings. Collection
-predates service-period alignment, using naive triggering and the $8$\,ms
-deferral, while every arm reported here is aligned with the deferral off. The
-deferral is bypassed when the OFDMA bit is clear, so the two coincide on
-OFDMA-off transitions and differ only on the half of the data where the logger
-set the bit---there training charges OFDMA more than deployment does, biasing a
-learner toward disabling it. Table~\ref{tab:main} is unaffected: every arm ran
-aligned.
+Dataset and reported runs do not share identical settings. Collection predates
+service-period alignment, using naive triggering and the $8$\,ms deferral,
+while every arm reported here is aligned with the deferral off. The deferral is
+bypassed when the OFDMA bit is clear, so the two coincide on OFDMA-off
+transitions and differ only where the logger set the bit---there training
+charges OFDMA more than deployment does, biasing a learner toward disabling it.
+Table~\ref{tab:main} is unaffected: every arm ran aligned.
 
 Four instrumentation faults materially affected earlier evaluations, each
 invisible in aggregate statistics: a convergence gate that discarded a sound

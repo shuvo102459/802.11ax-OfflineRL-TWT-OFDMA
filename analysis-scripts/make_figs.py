@@ -147,5 +147,13 @@ def fig_nsta():
 
 if __name__ == "__main__":
     print("writing figures from frozen*.json:")
-    fig_system(); fig_ordering(); fig_nsta()
+    fig_system()
+    # fig_ordering/fig_nsta are no longer in the paper: the correlation scatter
+    # was replaced by fig_results (energy CIs + policy behaviour), which is the
+    # convention in this literature. Kept here because both are still cited in
+    # the artifact discussion.
+    fig_ordering(); fig_nsta()
+    import subprocess, sys as _s
+    subprocess.run([_s.executable, os.path.join(os.path.dirname(__file__),
+                    "make_fig_results.py")], check=False)
     print(f"  -> {OUT}")
