@@ -258,6 +258,25 @@ Two comparisons are reported per algorithm, and they answer different questions:
 The gap between those columns is the paper's sharpest point: **checkpoint
 selection, not policy optimisation, is the remaining difficulty.**
 
+### Robustness to the power model
+
+The scenario leaves CCA-busy at ns-3's default 273 mA against its own 66 mA
+receive current, so sensing costs more than transmitting — not a realisable
+radio. Re-evaluating every load-bearing arm at 66 mA, same policies and seeds
+(`eval-scripts/6-reprice-cca-current.sh`):
+
+| arm | 273 mA | 66 mA | shift |
+|---|---|---|---|
+| static TWT | 173.3 J | 130.8 J | −24.5 % |
+| static + OFDMA | 282.2 J | 206.5 J | −26.8 % |
+| hand-designed | 166.5 J | 123.1 J | −26.1 % |
+| IQL (10 fits) | 107.3 J (s.d. 2.6) | 84.6 J (s.d. 1.6) | −21.1 % |
+
+Both conclusions hold: the OFDMA penalty goes +62.8 % → **+57.8 %**, and IQL
+still beats the hand-designed controller by **31.2 %** (CI [−32.2, −30.2],
+*p* = 1.8×10⁻¹⁵) instead of 35.6 %. Magnitudes are conditional on the profile;
+signs and orderings are not.
+
 **TWT and OFDMA substitute rather than combine.** Energy across the five
 methods is ordered almost deterministically by how often each enables the
 scheduler (*r* = 0.981), and an independent coordinate search over the

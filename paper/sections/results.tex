@@ -24,18 +24,20 @@ spends in PHY sleep, averaged over the sixteen---differs by under $0.8$
 percentage points between the OFDMA arms. Stations sleep just as much; their
 awake time simply costs more.
 
-The PHY-state traces show where it goes. Of the $113.7$\,J of extra energy,
-$69\,\%$ is carrier-sense busy and $24\,\%$ receiving; only $9\,\%$ is
+The PHY-state traces show where it goes: of the $113.7$\,J of extra energy,
+$69\,\%$ is carrier-sense busy and $24\,\%$ receiving, only $9\,\%$
 transmission. A solicited station listens through the trigger, the allocation
 and the acknowledgement, charged at the CCA-busy current.
 
-This also tells us what the magnitude depends on. The scenario inherits ns-3's
-default CCA-busy current of $273$\,mA while setting its own receive current to
-$66$\,mA. Repricing CCA at the receive current cuts the extra energy from
-$113.7$ to $49.8$\,J, still a cost rather than a saving. Re-running a matched
-pair under the repriced model, the learned policy's advantage over the same
-hand-designed controller narrows from $31.4$ to $19.9\,\%$, both at
-$p = 1.8\times10^{-15}$. Signs survive the change; magnitudes do not.
+The scenario inherits ns-3's default CCA-busy current of $273$\,mA while
+setting its own receive current to $66$\,mA, so sensing the medium costs more
+than transmitting on it---not a realisable radio. We therefore re-evaluated
+every arm the claims rest on at $66$\,mA, same policies, same seeds. Energies
+fall by $21$ to $27\,\%$ and not uniformly, but both conclusions hold: OFDMA
+still costs $+57.8\,\%$ under the static schedule rather than $+62.8\,\%$, and
+IQL still beats the hand-designed controller, by $31.2\,\%$ ($84.6$ against
+$123.1$\,J, CI $[-32.2,-30.2]\,\%$) rather than $35.6\,\%$. Signs survive the
+power profile; magnitudes do not.
 
 \subsection{One algorithm beats the tuned rule}
 
@@ -44,18 +46,20 @@ $99$\,J ($265.5$ against $166.5$\,J) at slightly better throughput. We take the
 stronger form, $166.5$\,J at $19.22$\,Mb/s, as the baseline.
 
 
-IQL reaches $107.3 \pm 2.6$\,J over ten fits: a $35.6\,\%$ reduction, CI
-$[-36.5,-34.7]\,\%$, $p = 1.8\times10^{-15}$ on fifty paired seeds. Nothing is
+IQL reaches $107.3 \pm 2.6$\,J, the spread being the standard deviation over
+ten independent training runs rather than a confidence interval: what training
+once should land on. That is a $35.6\,\%$ reduction, CI $[-36.5,-34.7]\,\%$,
+$p = 1.8\times10^{-15}$ on fifty paired seeds. Nothing is
 traded for it: throughput rises to $20.76$ from $19.22$\,Mb/s and mean delay
 falls by $83$\,ms ($p = 9.8\times10^{-9}$ paired), while the change in budget
 violations is not statistically detectable ($p = 0.07$). Its worst fit of ten,
 $112.4$\,J, still beats every other method's best.
 
-Absolute delays warrant a word: the cell carries a persistent standing queue,
-flat at $2.6$--$2.9$\,s across all $42$ decisions and across every arm,
-including the one with neither mechanism. It reflects queue depth under this
-offered load rather than a response to scheduling, so we read delay as a guard
-against winning by starving traffic, not as a latency claim.
+Absolute delays warrant a word: the cell carries a standing queue, flat at
+$2.6$--$2.9$\,s across all $42$ decisions and every arm, including the one with
+neither mechanism. It reflects queue depth under this load rather than a
+response to scheduling, so we read delay as a guard against winning by starving
+traffic, not as a latency claim.
 
 \subsection{Four of five do not, and selection is why}
 
@@ -109,8 +113,6 @@ $+15\,\%$ on the default at $p = 2\times10^{-15}$ with throughput falling at
 each step. Solicitation cost scales with the stations a trigger names; the
 benefit scales with the data they have, and in this mix they have little.
 
-\subsection{The result survives the load change}
-
 Each seed either holds its offered load constant or steps it by $1.5$ to
 $2.5\times$ partway through. Splitting the fifty on that flag tests whether the
 policy needs a settled traffic pattern; it does not---$35.1\,\%$ below the
@@ -125,8 +127,8 @@ were invisible in aggregate statistics. A convergence gate admitted only
 snapshots whose FQE drift fell below $2\,\%$; none passed, so selection fell
 back to the final epoch, which both FQE and the simulator rank last of four.
 Evaluating every snapshot in ns-3 gives a Spearman correlation of $-1.000$
-between FQE value and energy, so the ranking was sound and the gate discarded
-it, at $6.5\,\%$ energy; we now rank on FQE alone. The inherited reward charged
+between FQE value and energy: the ranking was sound, the gate discarded it, and
+it cost $6.5\,\%$ energy. We now rank on FQE alone. The inherited reward charged
 $\tanh(E/E_0)$ at $E_0=400$\,mJ against an $E$ spanning $1390$ to
 $14{,}167$\,mJ, saturated for $99.99\,\%$ of transitions; retraining all ten
 fits on it costs $13.3$\,J ($120.7 \pm 5.6$ against $107.3 \pm 2.6$,

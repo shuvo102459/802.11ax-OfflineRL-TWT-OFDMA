@@ -12,9 +12,9 @@ We cast joint control as a 760-way action, selecting a TWT schedule, a
 station-to-group assignment, and whether uplink OFDMA is enabled at each
 decision, and train five offline algorithms on 100{,}235 logged transitions in
 ns-3.44.
-Implicit Q-Learning reaches $107.3 \pm 2.6$\,J against a tuned hand-designed
-controller's $166.5$\,J, a $35.6\,\%$ reduction at higher throughput and
-consistent across ten training seeds, while four of the five methods lose to
-that controller and the energy of all five is ordered by how often each enables
-uplink OFDMA.
+Implicit Q-Learning reaches $107.3$\,J against a tuned hand-designed
+controller's $166.5$\,J, a $35.6\,\%$ reduction at higher throughput, and does
+so consistently: the spread over ten training runs is $2.6$\,J. Four of the
+five methods lose to that controller, and the energy of all five is ordered by
+how often each enables uplink OFDMA.
 \end{abstract}
