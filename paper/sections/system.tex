@@ -40,10 +40,10 @@ $760$ encoded actions realise fewer distinct configurations.
 When uplink OFDMA is enabled the access point sends a trigger frame naming a
 set of stations and the resource unit each may use; those stations reply
 simultaneously in a trigger-based PPDU. Contention is replaced by scheduling at
-a cost: a solicited station is awake for the whole exchange. This is where the
-mechanisms meet---a station outside its service period cannot be solicited, so
-OFDMA multiplexes only \emph{within} the awake group while consuming part of
-the window the schedule was keeping short. The scheduler solicits at most four
+a cost: a solicited station is awake for the whole exchange. A station outside
+its service period cannot be solicited at all, so OFDMA multiplexes only
+\emph{within} the awake group while consuming part of the window the schedule
+was keeping short. The scheduler solicits at most four
 stations per trigger, ns-3's default, against the nine $26$-tone resource units
 a $20$\,MHz channel admits; Section~\ref{sec:results} reports both.
 

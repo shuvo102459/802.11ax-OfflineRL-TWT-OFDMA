@@ -6,8 +6,8 @@ latency-sensitive traffic~\cite{yang2021twt}; recent work treats the schedule it
 the object of optimisation~\cite{busacca2026twt}. Karaca~\cite{karaca2020joint}
 optimises the TWT mechanism jointly with scheduling, and Roy et
 al.~\cite{roy2023maximization} maximise timely throughput under TWT, allocating
-OFDMA resources \emph{within} an awake group. These fix a policy by analysis or
-optimisation; we fit one to logged data.
+OFDMA resources \emph{within} an awake group. Both fix a policy by analysis or optimisation. We fit one to logged data
+instead.
 
 \textbf{Uplink OFDMA scheduling.} A separate line schedules OFDMA without TWT:
 deep RL for the OFDMA MAC~\cite{kotagiri2021distributed}, coexisting latency
@@ -29,9 +29,8 @@ Offline RL~\cite{levine2020offline} removes it and pays in distribution shift,
 addressed by conservative value estimation~\cite{kumar2020cql,kostrikov2022iql};
 its wireless applications concentrate on cellular resource
 management~\cite{yang2024offline,eldeeb2026marl}, where
-action spaces are modest. What is new here is the combination of offline
-learning, per-decision enable/disable control of the scheduler, and a
-station-energy objective. Maksud and Carvalho~\cite{maksud2026drltwt}, coauthors
+action spaces are modest. We combine offline learning with per-decision control
+of the scheduler and score it on station energy. Maksud and Carvalho~\cite{maksud2026drltwt}, coauthors
 here, apply \emph{online} deep RL to dynamic TWT scheduling and share the ns-3
 scenario and energy accounting; this paper adds the OFDMA bit and the grouping
 to the action, learns offline, and asks whether the result beats a tuned

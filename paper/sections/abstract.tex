@@ -1,13 +1,13 @@
 \begin{abstract}
 IEEE 802.11ax introduces Target Wake Time (TWT) and uplink OFDMA to reduce
 station energy in dense Wi-Fi deployments.
-The two mechanisms are usually configured separately, and how they interact
-when an access point controls both is not established.
+The two mechanisms are usually configured separately, and no study measures
+station energy when an access point controls both.
 The difficulty is that a controller must adapt to changing traffic, yet online
 learning is impractical in a production network, and a hand-tuned rule needs an
 expert and is unlikely to be optimal.
-Offline reinforcement learning offers a middle path: a policy is trained from
-logged data alone, with no exploration on the live network.
+Offline reinforcement learning avoids both: a policy is trained from logged
+data alone, with no exploration on the live network.
 We cast joint control as a 760-way action, selecting a TWT schedule, a
 station-to-group assignment, and whether uplink OFDMA is enabled at each
 decision, and train five offline algorithms on 100{,}235 logged transitions in

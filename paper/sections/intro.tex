@@ -1,39 +1,35 @@
 \section{Introduction}
 
-Wi-Fi now carries a large share of indoor traffic, and much of it originates
-from battery-powered devices. IEEE 802.11ax addresses their energy cost with
-two mechanisms. Target Wake Time (TWT) lets an access point schedule when each
-station wakes, so radios sleep between service
+IEEE 802.11ax gives an access point two ways to cut the energy cost of
+battery-powered stations. Target Wake Time (TWT) schedules when each station
+wakes, so radios sleep between service
 periods~\cite{chen2019twt,qiu2021category}. Uplink OFDMA replaces contention
 with scheduled resource units, so several stations transmit at
 once~\cite{kotagiri2021distributed,han2024multiagent}. Both reduce energy, and
-recent work treats their configuration as a scheduling problem in its own
-right~\cite{busacca2026twt,liu2025priority}.
+recent work treats their configuration as a scheduling problem of its
+own~\cite{busacca2026twt,liu2025priority}.
 
 The two mechanisms are normally configured in isolation. TWT studies fix the
 OFDMA setting, and OFDMA studies fix or ignore the sleep
-schedule~\cite{karaca2020joint,noh2024joint}. This leaves the
-joint setting unexamined, which matters because the mechanisms compete. A
-trigger frame is only useful to a station that is awake to receive it, so every
-OFDMA round draws on the airtime and the radio states that TWT is trying to
+schedule~\cite{karaca2020joint,noh2024joint}. Yet they compete for the same
+resource: a trigger frame is only useful to a station awake to receive it, so
+every OFDMA round draws on the airtime and the radio states TWT is trying to
 conserve.
 
-A single operating point also cannot serve a real deployment. Modern basic
-service sets carry mixed traffic---latency-sensitive video, periodic telemetry
-and voice in one cell~\cite{yang2021twt,tan2024drl}---and the best schedule
-under light telemetry is wasteful under a video burst. A controller must adapt,
-which raises how it should be obtained.
+No single setting serves a whole cell. A basic service set carries mixed
+traffic---latency-sensitive video, periodic telemetry and voice
+together~\cite{yang2021twt,tan2024drl}---and a schedule tuned for light
+telemetry is wasteful under a video burst. A controller must adapt, which
+raises how it should be obtained.
 
-Two obvious answers sit at opposite extremes. A hand-coded rule is cheap to run
-but needs an expert to tune, and it is unlikely to be optimal away from the
-conditions it was tuned for. An idealised online learner could in principle
-track the optimum instant by instant, but it must explore on the live network,
-and exploration costs latency and risks service
-degradation~\cite{wydmanski2021contention,yang2024offline}. Neither extreme is
-satisfactory for a deployed access point.
+A hand-coded rule is cheap to run but needs an expert to tune, and is unlikely
+to stay optimal away from the conditions it was tuned for. An idealised online
+learner could in principle track the optimum instant by instant, but it must
+explore on the live network, and exploration costs latency and risks service
+degradation~\cite{wydmanski2021contention,yang2024offline}.
 
-Offline reinforcement learning occupies the space between
-them~\cite{levine2020offline}. A policy is trained from an already-collected
+Offline reinforcement learning avoids both
+costs~\cite{levine2020offline}. A policy is trained from an already-collected
 dataset and never acts on the network while learning, so it needs neither
 exploration nor expert-labelled actions---though the state features, reward and
 action catalogue remain design choices. The price is

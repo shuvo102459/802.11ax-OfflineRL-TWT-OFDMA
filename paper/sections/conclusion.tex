@@ -1,9 +1,9 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We posed TWT scheduling, station grouping and uplink OFDMA enablement as one
-$760$-way offline control problem and compared five offline algorithms against
-nine non-learned scenarios on fifty paired seeds.
+TWT scheduling, station grouping and uplink OFDMA enablement form one $760$-way
+offline control problem. We trained five offline algorithms on it and measured
+them against nine non-learned scenarios on fifty paired seeds.
 
 In this setting IQL reduces station energy by $35.6\,\%$ against a tuned
 hand-designed controller at higher throughput, consistently over ten training
@@ -27,6 +27,6 @@ Finally the logged actions were held for ten decisions and collected before
 service-period alignment, so training and deployment differ on the OFDMA-on
 half of the data.
 
-Whether the substitution reverses at higher station counts, wider channels and
-larger solicitation sets is the natural next step, alongside a sourced power
-profile and a sweep of the grouping dimension.
+Higher station counts, wider channels and larger solicitation sets could still
+reverse the substitution; testing that needs a sourced power profile and a
+sweep of the grouping dimension.

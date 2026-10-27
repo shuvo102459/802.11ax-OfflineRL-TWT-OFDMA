@@ -47,8 +47,8 @@ action set makes unnecessary.
 
 \subsection{Checkpoint selection}
 
-Selecting a checkpoint without touching the network is itself a problem.
-Importance sampling is weak: the logger is uniform only at the ten-step refresh
+Choosing which checkpoint to deploy is harder than it looks when the network is
+off limits. Importance sampling is weak: the logger is uniform only at the ten-step refresh
 points, so the per-transition propensity is not $1/760$ and a match count does
 not characterise the effective sample size. Either way the overlap with a
 deterministic policy is small---tens of matching pairs among $15{,}025$
