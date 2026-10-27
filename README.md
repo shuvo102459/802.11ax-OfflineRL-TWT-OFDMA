@@ -57,7 +57,7 @@ pip install numpy scipy matplotlib
 ```bash
 # 1. clone into the twt examples directory
 cd $NS3/contrib/ai/examples/MobiCom/twt
-git clone https://github.com/shuvo102459/802.11ax-OfflineRL-TWT-OFDMA-WCNC27
+git clone https://github.com/shuvo102459/802.11ax-OfflineRL-TWT-OFDMA
 
 # 2. register the scenario
 cp 802.11ax-OfflineRL-TWT-OFDMA-WCNC27/twt-ofdma-main-simulation.cc \
